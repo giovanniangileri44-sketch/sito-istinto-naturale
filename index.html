@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Istinto Naturale | Leonardo Angileri & Vincenzo Angileri — Marsala</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            canvas: '#F9F8F5',
+            sandstone: '#EFECE4',
+            line: '#E2DDCF',
+            ink: '#181816',
+            terracotta: '#9E432D',
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-[#F9F8F5] text-[#181816] font-sans antialiased selection:bg-[#9E432D] selection:text-white">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // =========================================================================
+    // IMMAGINI DELLA CARTELLA LOCALE
+    // =========================================================================
+    const IMAGES = {
+      logo: "immagini/logo.jpg",                // <--- IL TUO LOGO CIRCOLARE
+      vineyardWide: "immagini/vigna-mare.jpg",
+      bushVineOld: "immagini/alberello.jpg",
+      harvestGrapes: "immagini/vendemmia.jpg",
+      cellarTanks: "immagini/cantina.jpg",
+    };
+
+    const contatti = {
+      nome: "Istinto Naturale",
+      fondatore: "Leonardo Angileri",
+      socio: "Vincenzo Angileri",
+      luogo: "Marsala (Trapani), Sicilia",
+      coordinate: "37°47'N — 12°26'E",
+      altitudine: "0 metri s.l.m.",
+      telefono: "+39 347 211 0207",
+      whatsapp: "393472110207",
+      whatsappDisplay: "+39 347 211 0207",
+      email: "istintonaturale1@gmail.com",
+      instagram: "@istintonaturale_",
+      instagramUrl: "https://instagram.com/istintonaturale_"
+    };
+
+    const vini = [
+      {
+        slug: "principino",
+        nome: "Principino",
+        immagine: "immagini/principino.png",
+        denominazione: "Terre Siciliane IGT",
+        tipologia: "Bianco Naturale da Uva Sola",
+        vitigno: "100% Grillo",
+        annata: "2023",
+        gradazione: "13.0% vol",
+        coloreCapsula: "#C5A059",
+        peculiarita: "Il Grillo è nato nell'Ottocento come incrocio spontaneo tra Catarratto e Zibibbo. Ha buccia spessa, resistente al calore asciutto della costa, che estrae una matrice salina e minerale profonda.",
+        vinificazione: "Raccolta manuale in cassette nella seconda decade di settembre. Pressatura diretta senza macerazione a contatto con le bucce. Fermentazione spontanea con lieviti indigeni e fermentazione malolattica svolta naturalmente.",
+        affinamento: "7-8 mesi in vasche d'acciaio inox a contatto con le fecce fini (sur lies). Nessuna filtrazione, nessuna chiarifica, nessun additivo chimico e nessuna solforosa aggiunta.",
+        suolo: "Medio impasto, argilloso-calcareo a ridosso del litorale.",
+        sistemaAllevamento: "Alberello tradizionale trapanese e Guyot.",
+        altitudine: "0 metri sul livello del mare.",
+        profilo: "Fresco, asciutto, teso. Profumi di zeste di cedro, polpa di mela cotogna, fiori d'arancio ed evidente salsedine marina al palato.",
+        eLabel: {
+          energia: "298 kJ / 71 kcal",
+          grassi: "0 g",
+          carboidrati: "0.4 g (zuccheri 0.1 g)",
+          proteine: "0.1 g",
+          sale: "< 0.01 g",
+          ingredienti: "Uve biologiche di Grillo. Imbottigliato all'origine senza aggiunta di solfiti. Contiene solfiti naturali.",
+          smaltimento: "Bottiglia: Vetro GL 71 | Tappo: Sughero FOR 51 | Capsula: Ceralacca C/PP 90"
+        }
+      },
+      {
+        slug: "zeta",
+        nome: "Zeta",
+        immagine: "immagini/zeta.png",
+        denominazione: "Terre Siciliane IGT",
+        tipologia: "Bianco Naturale Costiero",
+        vitigno: "Catarratto & Zibibbo (Moscato d'Alessandria)",
+        annata: "2024",
+        gradazione: "11.5% vol",
+        coloreCapsula: "#3CC2B2",
+        peculiarita: "L'unione genetica dei due vitigni identitari della Sicilia occidentale: la spalla acida e sapida del Catarratto incontra la ricchezza aromatica asciutta e floreale dello Zibibbo coltivato vicino al mare.",
+        vinificazione: "Vendemmia a mano. Pressatura diretta e soffice a grappolo intero per estrarre la purezza del succo senza note tanniche vegetali. Avvio naturale della fermentazione con soli lieviti indigeni.",
+        affinamento: "7 mesi in acciaio sulle fecce fini con periodici rimescolamenti leggeri. Imbottigliato non filtrato e privo di solforosa aggiunta.",
+        suolo: "Argillo-sabbioso a ridosso della laguna e delle saline.",
+        sistemaAllevamento: "Alberello a ceppo basso.",
+        altitudine: "0 metri sul livello del mare.",
+        profilo: "Vino di luce e beva scattante. Gelsomino, salvia, fichi d'India bianchi, con una sferzata minerale che ripulisce interamente la bocca.",
+        eLabel: {
+          energia: "284 kJ / 68 kcal",
+          grassi: "0 g",
+          carboidrati: "0.3 g (zuccheri 0.1 g)",
+          proteine: "0.1 g",
+          sale: "< 0.01 g",
+          ingredienti: "Uve biologiche di Catarratto e Zibibbo. Nessun conservante né solforosa aggiunta.",
+          smaltimento: "Bottiglia: Vetro GL 71 | Tappo: Sughero FOR 51 | Capsula: Ceralacca C/PP 90"
+        }
+      },
+      {
+        slug: "rosa",
+        nome: "Ro.Sa.",
+        immagine: "immagini/rosa.png",
+        denominazione: "Rosato Terre Siciliane IGT",
+        tipologia: "Rosato Naturale da Uva Rara",
+        vitigno: "100% Parpato",
+        annata: "2023",
+        gradazione: "12.0% vol",
+        coloreCapsula: "#9E2A63",
+        peculiarita: "Il Parpato è un antico vitigno a bacca nera quasi introvabile, reliquia storica dell'agro di Marsala. Dà vita a un rosato gastronomico, materico e dal colore porpora luminoso.",
+        vinificazione: "Uve raccolte all'alba. Breve macerazione sulle bucce di sole 12 ore per estrarre colore e precursori salini, seguita da svinatura naturale per gravità. Fermentazione spontanea.",
+        affinamento: "6 mesi in vasca d'acciaio sulle fecce nobili. Nessuna chiarifica con prodotti di origine animale, non filtrato, zero solforosa.",
+        suolo: "Suolo ferallittico ('Terra Rossa') con alto contenuto di ossidi di ferro su roccia calcarea.",
+        sistemaAllevamento: "Alberello storico.",
+        altitudine: "0 metri sul livello del mare.",
+        profilo: "Frutti rossi croccanti, melograno, timo selvatico e capperi essiccati. Palato teso, sapido, dal finale asciutto e persistente.",
+        eLabel: {
+          energia: "290 kJ / 70 kcal",
+          grassi: "0 g",
+          carboidrati: "0.4 g (zuccheri 0.1 g)",
+          proteine: "0.1 g",
+          sale: "< 0.01 g",
+          ingredienti: "Uve biologiche di Parpato. Senza additivi enologici. Contiene solfiti naturali.",
+          smaltimento: "Bottiglia: Vetro GL 71 | Tappo: Sughero FOR 51 | Capsula: Ceralacca C/PP 90"
+        }
+      },
+      {
+        slug: "zeta-bubble",
+        nome: "Zeta Bubble",
+        immagine: "immagini/zeta-bubble.png",
+        denominazione: "Rifermentato Ancestrale Integrale",
+        tipologia: "Vino Frizzante Naturale (Col Fondo)",
+        vitigno: "Catarratto & Zibibbo",
+        annata: "2024",
+        gradazione: "11.0% vol",
+        coloreCapsula: "#5CE1D2",
+        peculiarita: "La declinazione effervescente e marina di Istinto Naturale. Rifermentato naturalmente in bottiglia aggiungendo mosto della stessa vendemmia conservato al freddo, senza zuccheri esogeni né lieviti industriali.",
+        vinificazione: "Metodo ancestrale spontaneo. Imbottigliato torbido con i propri lieviti indigeni senza alcuna sboccatura finale (sur lies). Tappo a corona per preservare la freschezza viva.",
+        affinamento: "Presa di spuma in bottiglia. Zero solfiti aggiunti.",
+        suolo: "Sabbie marine costiere miste a ciottoli calcarei.",
+        sistemaAllevamento: "Alberello tradizionale.",
+        altitudine: "0 metri sul livello del mare.",
+        profilo: "Spuma cremosa, profumi agrumati di mandarino tardivo, erbe spontanee di costa e crosta di pane di semola. Beva energica e salina.",
+        eLabel: {
+          energia: "275 kJ / 66 kcal",
+          grassi: "0 g",
+          carboidrati: "0.2 g (zuccheri 0.1 g)",
+          proteine: "0.1 g",
+          sale: "< 0.01 g",
+          ingredienti: "Uve biologiche di Catarratto, Zibibbo e mosto d'uva autoctono. Zero solfiti aggiunti.",
+          smaltimento: "Bottiglia: Vetro GL 71 | Chiusura: Acciaio FE 40 / Alluminio ALU 41"
+        }
+      }
+    ];
+
+    // =========================================================================
+    // COMPONENTE LOGO CIRCOLARE CON FALLBACK ELEGANTE
+    // =========================================================================
+    function CircularLogo({ src, className = "w-11 h-11" }) {
+      const [failed, setFailed] = useState(false);
+
+      if (!failed && src) {
+        return (
+          <img
+            src={src}
+            alt="Logo Istinto Naturale"
+            className={`${className} rounded-full object-cover border border-line shadow-sm shrink-0 transition-transform duration-300 group-hover:scale-105`}
+            onError={() => setFailed(true)}
+          />
+        );
+      }
+
+      // Sigillo grafico nel caso il file logo.jpg non sia ancora stato inserito
+      return (
+        <div className={`${className} rounded-full border border-line bg-sandstone/70 flex items-center justify-center font-serif text-xs font-bold text-terracotta tracking-wider shadow-sm select-none shrink-0`}>
+          IN
+        </div>
+      );
+    }
+
+    // Componente Bottiglia con fallback grafico
+    function BottleDisplay({ wine, className = "h-64 sm:h-80" }) {
+      const [imgFailed, setImgFailed] = useState(false);
+
+      if (wine.immagine && !imgFailed) {
+        return (
+          <img
+            src={wine.immagine}
+            alt={wine.nome}
+            className={`${className} w-auto object-contain filter drop-shadow-xl transition-transform duration-300 hover:scale-105`}
+            onError={() => setImgFailed(true)}
+          />
+        );
+      }
+
+      return (
+        <svg viewBox="0 0 140 460" className={`${className} w-auto filter drop-shadow-md`} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M62 16 H78 V75 Q80 110 106 135 Q115 146 115 175 V415 Q115 435 95 435 H45 Q25 435 25 415 V175 Q25 146 34 135 Q60 110 62 75 Z" fill="#1C1F1B" />
+          <path d="M60 14 H80 V42 Q78 52 74 58 Q70 64 70 70 Q69 56 66 50 Q63 60 62 64 Q60 50 60 42 Z" fill={wine.coloreCapsula} />
+          <path d="M35 180 Q35 155 45 138 Q62 115 64 80 H67 Q65 115 50 138 Q40 155 40 180 V410 H35 Z" fill="#FFFFFF" fillOpacity="0.06" />
+          <rect x="36" y="200" width="68" height="155" rx="1" fill="#FAF8F5" stroke="#E6E0D4" strokeWidth="1" />
+          <text x="70" y="235" textAnchor="middle" fill="#181816" fontFamily="Cormorant Garamond" fontSize="10" fontWeight="600" letterSpacing="1.5">ISTINTO</text>
+          <text x="70" y="247" textAnchor="middle" fill="#181816" fontFamily="Cormorant Garamond" fontSize="8" letterSpacing="2">NATURALE</text>
+          <line x1="48" y1="260" x2="92" y2="260" stroke={wine.coloreCapsula} strokeWidth="1.5" />
+          <text x="70" y="280" textAnchor="middle" fill="#9E432D" fontFamily="JetBrains Mono" fontSize="7">0 M S.L.M.</text>
+          <text x="70" y="306" textAnchor="middle" fill="#181816" fontFamily="Cormorant Garamond" fontSize="13" fontWeight="bold">{wine.nome.toUpperCase()}</text>
+          <text x="70" y="322" textAnchor="middle" fill="#777" fontFamily="JetBrains Mono" fontSize="6.5">{wine.annata} • MARSALA</text>
+        </svg>
+      );
+    }
+
+    // --- APPLICAZIONE PRINCIPALE ---
+    function App() {
+      const [view, setView] = useState('home');
+      const [currentWineSlug, setCurrentWineSlug] = useState('principino');
+
+      useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, [view, currentWineSlug]);
+
+      const wine = vini.find(w => w.slug === currentWineSlug) || vini[0];
+
+      // SCHEDA E-LABEL NORMATIVA UE
+      if (view === 'elabel') {
+        return (
+          <div className="min-h-screen bg-white text-ink p-6 sm:p-12 max-w-xl mx-auto font-sans">
+            <div className="flex justify-between items-center border-b border-black/10 pb-4 mb-8">
+              <span className="font-mono text-[11px] uppercase tracking-widest text-black/50">Reg. UE 2021/2117 • Trasparenza</span>
+              <button onClick={() => setView('vino')} className="font-mono text-xs text-terracotta underline font-semibold">← Torna alla scheda</button>
+            </div>
+
+            <div className="text-center pb-6 border-b border-black/10">
+              <span className="font-mono text-xs uppercase tracking-widest text-black/60">Istinto Naturale di Leonardo & Vincenzo Angileri</span>
+              <h1 className="font-serif text-3xl font-bold mt-1">{wine.nome}</h1>
+              <p className="font-mono text-xs text-black/70 mt-1">{wine.denominazione} — Annata {wine.annata} • {wine.gradazione}</p>
+              <p className="font-mono text-[11px] text-black/50 mt-0.5">{contatti.luogo} • Altitudine {contatti.altitudine}</p>
+            </div>
+
+            <div className="py-6 border-b border-black/10 text-xs">
+              <span className="font-mono uppercase font-bold text-black/70 block mb-2">Ingredienti ed Allergeni</span>
+              <p className="bg-neutral-50 p-3.5 border border-black/5 leading-relaxed text-black/85">{wine.eLabel.ingredienti}</p>
+            </div>
+
+            <div className="py-6 border-b border-black/10 text-xs">
+              <span className="font-mono uppercase font-bold text-black/70 block mb-2">Dichiarazione Nutrizionale per 100 ml</span>
+              <div className="border border-black/10 divide-y divide-black/5">
+                <div className="flex justify-between p-2.5 font-bold bg-neutral-100"><span>Energia</span><span>{wine.eLabel.energia}</span></div>
+                <div className="flex justify-between p-2"><span>Grassi</span><span>{wine.eLabel.grassi}</span></div>
+                <div className="flex justify-between p-2"><span>Carboidrati</span><span>{wine.eLabel.carboidrati}</span></div>
+                <div className="flex justify-between p-2"><span>Proteine</span><span>{wine.eLabel.proteine}</span></div>
+                <div className="flex justify-between p-2"><span>Sale</span><span>{wine.eLabel.sale}</span></div>
+              </div>
+            </div>
+
+            <div className="py-6 border-b border-black/10 text-xs">
+              <span className="font-mono uppercase font-bold text-black/70 block mb-2">Smaltimento Imballaggi</span>
+              <p className="bg-neutral-50 p-3.5 border border-black/5 text-black/80 font-mono text-[11px]">{wine.eLabel.smaltimento}</p>
+            </div>
+
+            <div className="pt-6 text-center font-mono text-[10px] text-black/40">
+              Scheda tecnica ufficiale generata in conformità all'art. 119, par. 5 del Regolamento (UE) n. 1308/2013.
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="min-h-screen flex flex-col justify-between">
+          
+          {/* HEADER CON LOGO CIRCOLARE A SINISTRA DEL TITOLO */}
+          <header className="border-b border-line bg-canvas sticky top-0 z-40 px-6 md:px-12 py-4">
+            <div className="max-w-6xl mx-auto flex items-center justify-between">
+              
+              {/* Blocco Brand: Logo Circolare + Testo */}
+              <div onClick={() => setView('home')} className="flex items-center gap-3.5 cursor-pointer group">
+                <CircularLogo src={IMAGES.logo} className="w-11 h-11" />
+                <div>
+                  <span className="font-serif text-2xl tracking-[0.16em] font-semibold text-ink group-hover:text-terracotta transition-colors block">
+                    ISTINTO NATURALE
+                  </span>
+                  <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-ink/50 block -mt-0.5">
+                    Leonardo & Vincenzo Angileri • Marsala
+                  </span>
+                </div>
+              </div>
+
+              {/* Menu di Navigazione */}
+              <nav className="flex items-center space-x-6 sm:space-x-8 font-mono text-xs uppercase tracking-widest text-ink/80">
+                <button 
+                  onClick={() => setView('home')} 
+                  className={`transition-colors ${view === 'home' ? 'text-terracotta font-semibold' : 'hover:text-ink'}`}
+                >
+                  I Vini
+                </button>
+                <button 
+                  onClick={() => setView('vigna-cantina')} 
+                  className={`transition-colors ${view === 'vigna-cantina' ? 'text-terracotta font-semibold' : 'hover:text-ink'}`}
+                >
+                  Vigna & Cantina
+                </button>
+                <button 
+                  onClick={() => setView('contatti')} 
+                  className={`transition-colors ${view === 'contatti' ? 'text-terracotta font-semibold' : 'hover:text-ink'}`}
+                >
+                  Contatti
+                </button>
+              </nav>
+
+            </div>
+          </header>
+
+          <main className="flex-1">
+
+            {/* VISTA 1: HOME */}
+            {view === 'home' && (
+              <div>
+                <section className="px-6 md:px-12 pt-16 pb-12 max-w-4xl mx-auto text-center">
+                  <span className="font-mono text-xs uppercase tracking-[0.25em] text-terracotta">
+                    SICILIA OCCIDENTALE • ALTITUDINE 0 METRI S.L.M.
+                  </span>
+                  <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl text-ink font-normal mt-4 leading-tight">
+                    Vini franchi, nati a ridosso del mare nelle terre calcaree di Marsala.
+                  </h1>
+                  <p className="font-sans text-sm sm:text-base text-ink/75 mt-6 leading-relaxed max-w-2xl mx-auto font-light">
+                    Leonardo e Vincenzo Angileri coltivano vigne ad alberello su terreni sabbiosi e argillosi davanti alle Isole Egadi. 
+                    Agricoltura biologica, uve raccolte a mano, fermentazioni spontanee con lieviti indigeni e nessuna aggiunta di solforosa.
+                  </p>
+                </section>
+
+                <section className="px-6 md:px-12 max-w-6xl mx-auto mb-20">
+                  <div className="relative border border-line overflow-hidden">
+                    <img 
+                      src={IMAGES.vineyardWide}
+                      alt="I vigneti di Marsala affacciati sul mare" 
+                      className="w-full h-72 sm:h-96 md:h-[460px] object-cover object-center filter brightness-95"
+                    />
+                    <div className="absolute bottom-4 right-4 bg-canvas/90 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-ink/70 border border-line">
+                      Vigneti storici a quota zero • Canale di Sicilia
+                    </div>
+                  </div>
+                </section>
+
+                {/* Griglia 4 Vini */}
+                <section className="px-6 md:px-12 max-w-6xl mx-auto pb-24">
+                  <div className="border-b border-line pb-4 mb-10 flex justify-between items-end">
+                    <div>
+                      <span className="font-mono text-xs uppercase tracking-widest text-terracotta">PRODUZIONE ARTIGIANALE</span>
+                      <h2 className="font-serif text-3xl font-medium text-ink mt-1">I Quattro Vini</h2>
+                    </div>
+                    <span className="font-mono text-xs text-ink/50 hidden sm:block">4 Referenze • Senza Chimica Aggiunta</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {vini.map(w => (
+                      <div 
+                        key={w.slug}
+                        onClick={() => { setCurrentWineSlug(w.slug); setView('vino'); }}
+                        className="bg-white border border-line p-6 flex flex-col justify-between cursor-pointer hover:border-ink/40 transition-all group"
+                      >
+                        <div>
+                          <div className="flex justify-between items-start mb-2">
+                            <span className="font-mono text-[10px] text-ink/50 uppercase">{w.denominazione}</span>
+                            <span className="font-mono text-[11px] font-semibold text-ink/70">{w.gradazione}</span>
+                          </div>
+                          <h3 className="font-serif text-2xl font-bold text-ink group-hover:text-terracotta transition-colors">{w.nome}</h3>
+                          <p className="font-mono text-xs text-ink/60 mt-0.5">{w.vitigno}</p>
+                          
+                          <div className="py-8 flex justify-center">
+                            <BottleDisplay wine={w} className="h-64 sm:h-72" />
+                          </div>
+
+                          <p className="font-sans text-xs text-ink/75 leading-relaxed line-clamp-3">
+                            {w.peculiarita}
+                          </p>
+                        </div>
+
+                        <div className="border-t border-line mt-6 pt-4 flex justify-between items-center font-mono text-xs">
+                          <span className="text-ink/50">Annata {w.annata}</span>
+                          <span className="text-terracotta font-medium group-hover:underline">Vedi Scheda →</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </div>
+            )}
+
+            {/* VISTA 2: VIGNA & CANTINA */}
+            {view === 'vigna-cantina' && (
+              <div className="px-6 md:px-12 py-16 max-w-5xl mx-auto space-y-20">
+                
+                <div className="border-b border-line pb-8">
+                  <span className="font-mono text-xs uppercase tracking-widest text-terracotta">METODO DI CAMPAGNA E DI PALMENTO</span>
+                  <h1 className="font-serif text-4xl sm:text-5xl font-normal text-ink mt-2">
+                    La terra, il vento di mare e l'autonomia produttiva.
+                  </h1>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                  <div>
+                    <img 
+                      src={IMAGES.bushVineOld}
+                      alt="Ceppo di vite centenaria ad alberello" 
+                      className="w-full h-80 object-cover border border-line"
+                    />
+                    <span className="font-mono text-[10px] text-ink/50 mt-2 block">Vite centenaria ad alberello su terreno sabbioso costiero</span>
+                  </div>
+                  <div className="space-y-4">
+                    <span className="font-mono text-xs text-terracotta uppercase tracking-wider font-semibold">01 • Il Terroir Marino</span>
+                    <h2 className="font-serif text-2xl sm:text-3xl font-medium text-ink">Quota 0 metri sul livello del mare</h2>
+                    <p className="font-sans text-sm text-ink/80 leading-relaxed">
+                      I vigneti di Istinto Naturale si trovano nella fascia costiera di Marsala, lambiti dalla brezza salina dello Stagnone e del Canale di Sicilia.
+                    </p>
+                    <p className="font-sans text-sm text-ink/80 leading-relaxed">
+                      I terreni alternano strati sabbiosi e banchi argilloso-calcarei. Nelle sabbie marine la fillossera non è riuscita a propagarsi: questo ha permesso la conservazione di viti storiche su <strong>piede franco</strong>, senza portainnesto americano.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                  <div className="order-2 md:order-1 space-y-4">
+                    <span className="font-mono text-xs text-terracotta uppercase tracking-wider font-semibold">02 • Architettura della Vite</span>
+                    <h2 className="font-serif text-2xl sm:text-3xl font-medium text-ink">L'Alberello a Ceppo Basso</h2>
+                    <p className="font-sans text-sm text-ink/80 leading-relaxed">
+                      Le viti sono allevate ad alberello, senza pali di sostegno né fili di ferro. È la forma di potatura ideale per Marsala: la pianta rimane raccolta e bassa, proteggendosi dalle raffiche continue di Scirocco e Ponente.
+                    </p>
+                    <p className="font-sans text-sm text-ink/80 leading-relaxed">
+                      Le foglie ombreggiano i grappoli dal sole estivo cocente, mantenendo l'acidità naturale dell'uva. Tutto il lavoro tra i ceppi è rigorosamente manuale.
+                    </p>
+                  </div>
+                  <div className="order-1 md:order-2">
+                    <img 
+                      src={IMAGES.harvestGrapes}
+                      alt="Vendemmia manuale delle uve" 
+                      className="w-full h-80 object-cover border border-line"
+                    />
+                    <span className="font-mono text-[10px] text-ink/50 mt-2 block">Raccolta manuale a grappolo intero in piccole cassette</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                  <div>
+                    <img 
+                      src={IMAGES.cellarTanks}
+                      alt="Vasche di cantina e affinamento sulle fecce fini" 
+                      className="w-full h-80 object-cover border border-line"
+                    />
+                    <span className="font-mono text-[10px] text-ink/50 mt-2 block">Affinamento naturale in acciaio sulle fecce fini</span>
+                  </div>
+                  <div className="space-y-4">
+                    <span className="font-mono text-xs text-terracotta uppercase tracking-wider font-semibold">03 • Il Lavoro in Cantina</span>
+                    <h2 className="font-serif text-2xl sm:text-3xl font-medium text-ink">Fermentazioni Spontanee e Zero Solforosa</h2>
+                    <p className="font-sans text-sm text-ink/80 leading-relaxed">
+                      In cantina Leonardo e Vincenzo Angileri non usano prodotti enologici correttivi:
+                    </p>
+                    <ul className="font-sans text-xs sm:text-sm text-ink/80 space-y-2 list-disc list-inside">
+                      <li>Solo lieviti autoctoni presenti sulla buccia delle uve.</li>
+                      <li>Nessuna chiarifica e nessuna filtrazione meccanica sterilizzante.</li>
+                      <li>Nessuna aggiunta di anidride solforosa in nessuna fase produttiva.</li>
+                      <li>Affinamenti lenti in acciaio neutro sulle fecce fini (sur lies).</li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* VISTA 3: SCHEDA SINGOLO VINO */}
+            {view === 'vino' && (
+              <div className="px-6 md:px-12 py-16 max-w-5xl mx-auto">
+                
+                <div className="flex flex-wrap gap-2 sm:gap-3 border-b border-line pb-6 mb-12 font-mono text-xs uppercase tracking-wider">
+                  {vini.map(w => (
+                    <button
+                      key={w.slug}
+                      onClick={() => setCurrentWineSlug(w.slug)}
+                      className={`px-4 py-2 border transition-all ${
+                        currentWineSlug === w.slug
+                          ? 'border-ink bg-ink text-white font-semibold'
+                          : 'border-line bg-white text-ink/70 hover:border-ink/50'
+                      }`}
+                    >
+                      {w.nome}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                  
+                  <div className="lg:col-span-5 bg-white border border-line p-8 sm:p-12 flex flex-col items-center justify-center">
+                    <BottleDisplay wine={wine} className="h-72 sm:h-96" />
+                    <div className="mt-8 text-center border-t border-line pt-4 w-full">
+                      <span className="font-mono text-[11px] text-ink/60 uppercase block">Capsula in Ceralacca</span>
+                      <span className="font-mono text-xs font-semibold" style={{ color: wine.coloreCapsula }}>
+                        Sigillata a mano all'origine
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-7 space-y-8">
+                    <div>
+                      <span className="font-mono text-xs uppercase tracking-widest text-terracotta">{wine.denominazione}</span>
+                      <h1 className="font-serif text-4xl sm:text-5xl font-bold text-ink mt-1">{wine.nome}</h1>
+                      <p className="font-mono text-sm text-ink/60 mt-1">{wine.tipologia} • Annata {wine.annata}</p>
+                    </div>
+
+                    <div className="border-l-2 border-terracotta pl-4 py-1">
+                      <span className="font-mono text-xs uppercase tracking-wider text-terracotta font-semibold block mb-1">
+                        Peculiarità del Vitigno ({wine.vitigno})
+                      </span>
+                      <p className="font-sans text-sm text-ink/80 leading-relaxed">
+                        {wine.peculiarita}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span className="font-mono text-xs uppercase tracking-wider text-ink/50 block mb-1 font-semibold">
+                        Profilo ed Espressione Marina
+                      </span>
+                      <p className="font-sans text-sm text-ink/80 leading-relaxed">
+                        {wine.profilo}
+                      </p>
+                    </div>
+
+                    <div className="border border-line divide-y divide-line text-xs font-mono bg-white">
+                      <div className="p-3 bg-sandstone/40 font-semibold uppercase tracking-wider">
+                        Specifiche di Coltivazione e Cantina
+                      </div>
+                      <div className="p-3 grid grid-cols-3">
+                        <span className="text-ink/50 uppercase">Vinificazione</span>
+                        <span className="col-span-2 text-ink leading-relaxed">{wine.vinificazione}</span>
+                      </div>
+                      <div className="p-3 grid grid-cols-3">
+                        <span className="text-ink/50 uppercase">Affinamento</span>
+                        <span className="col-span-2 text-ink leading-relaxed">{wine.affinamento}</span>
+                      </div>
+                      <div className="p-3 grid grid-cols-3">
+                        <span className="text-ink/50 uppercase">Suolo</span>
+                        <span className="col-span-2 text-ink">{wine.suolo}</span>
+                      </div>
+                      <div className="p-3 grid grid-cols-3">
+                        <span className="text-ink/50 uppercase">Allevamento</span>
+                        <span className="col-span-2 text-ink">{wine.sistemaAllevamento}</span>
+                      </div>
+                      <div className="p-3 grid grid-cols-3">
+                        <span className="text-ink/50 uppercase">Altitudine</span>
+                        <span className="col-span-2 text-ink font-semibold">{wine.altitudine}</span>
+                      </div>
+                      <div className="p-3 grid grid-cols-3">
+                        <span className="text-ink/50 uppercase">Gradazione</span>
+                        <span className="col-span-2 text-ink font-semibold">{wine.gradazione}</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 flex flex-wrap items-center gap-4">
+                      <a
+                        href={`https://wa.me/${contatti.whatsapp}?text=${encodeURIComponent(`Salve, vorrei informazioni e disponibilità per il vino ${wine.nome} (${wine.annata}) da Istinto Naturale.`)}`}
+                        target="_blank"
+                        className="py-3 px-6 bg-ink text-white font-mono text-xs uppercase tracking-widest hover:bg-terracotta transition-colors"
+                      >
+                        Richiedi Disponibilità via WhatsApp
+                      </a>
+                      <button
+                        onClick={() => setView('elabel')}
+                        className="py-3 px-4 border border-line bg-white font-mono text-xs uppercase tracking-widest text-ink/70 hover:border-ink transition-colors"
+                      >
+                        E-Label Normativa UE
+                      </button>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+            )}
+
+            {/* VISTA 4: CONTATTI */}
+            {view === 'contatti' && (
+              <div className="px-6 md:px-12 py-20 max-w-3xl mx-auto">
+                <span className="font-mono text-xs uppercase tracking-widest text-terracotta">AZIENDA AGRICOLA A MARSALA</span>
+                <h1 className="font-serif text-4xl sm:text-5xl font-normal text-ink mt-2 mb-8">
+                  Contatti e Informazioni
+                </h1>
+
+                <p className="font-sans text-base text-ink/80 leading-relaxed mb-12">
+                  Istinto Naturale è una cantina artigianale indipendente. Per informazioni sulla disponibilità delle annate, per visitare i vigneti ad alberello o per metterti in contatto con noi, puoi usare i recapiti diretti qui sotto.
+                </p>
+
+                <div className="border border-line divide-y divide-line bg-white font-mono text-xs">
+                  <div className="p-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+                    <span className="text-ink/50 uppercase">Fondatore & Vignaiolo</span>
+                    <span className="font-semibold text-ink">{contatti.fondatore}</span>
+                  </div>
+                  <div className="p-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+                    <span className="text-ink/50 uppercase">Socio</span>
+                    <span className="font-semibold text-ink">{contatti.socio}</span>
+                  </div>
+                  <div className="p-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+                    <span className="text-ink/50 uppercase">Sede Vigneti e Cantina</span>
+                    <span className="text-ink">{contatti.luogo} ({contatti.coordinate})</span>
+                  </div>
+                  <div className="p-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+                    <span className="text-ink/50 uppercase">Telefono & WhatsApp</span>
+                    <a href={`https://wa.me/${contatti.whatsapp}`} target="_blank" className="text-terracotta underline font-semibold">
+                      {contatti.whatsappDisplay}
+                    </a>
+                  </div>
+                  <div className="p-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+                    <span className="text-ink/50 uppercase">Posta Elettronica</span>
+                    <a href={`mailto:${contatti.email}`} className="text-ink underline">
+                      {contatti.email}
+                    </a>
+                  </div>
+                  <div className="p-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+                    <span className="text-ink/50 uppercase">Instagram Ufficiale</span>
+                    <a href={contatti.instagramUrl} target="_blank" className="text-ink underline">
+                      {contatti.instagram}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          </main>
+
+          {/* FOOTER */}
+          <footer className="border-t border-line bg-sandstone/30 px-6 md:px-12 py-10 mt-16 font-mono text-xs text-ink/60">
+            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="flex items-center gap-3">
+                <CircularLogo src={IMAGES.logo} className="w-9 h-9" />
+                <div>
+                  <strong className="text-ink font-serif text-lg tracking-wider">ISTINTO NATURALE</strong>
+                  <span className="block text-[11px] text-ink/50">Leonardo Angileri & Vincenzo Angileri • Marsala (TP) • 0m s.l.m.</span>
+                </div>
+              </div>
+
+              <div className="flex gap-6 text-[11px]">
+                <button onClick={() => setView('home')} className="hover:text-ink">I Vini</button>
+                <button onClick={() => setView('vigna-cantina')} className="hover:text-ink">Vigna & Cantina</button>
+                <button onClick={() => setView('contatti')} className="hover:text-ink">Contatti</button>
+                <button onClick={() => { setCurrentWineSlug('principino'); setView('elabel'); }} className="text-terracotta hover:underline">E-Label UE</button>
+              </div>
+            </div>
+          </footer>
+
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
